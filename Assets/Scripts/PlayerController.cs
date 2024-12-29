@@ -14,9 +14,11 @@ public class PlayerController : MonoBehaviour
     private SpriteRenderer render;
     private Animation anim;
     private Rigidbody2D rig;
+    public GameObject bulletPrefab;
 
-    public float speed_x_constraint;    //移動速度限制
-    private float speed = 10;
+
+    public float speed_x_constraint =20 ;    //移動速度限制
+    private float speed = 100;
 
     //方向控制
     private bool IsFaceRight = false;
@@ -39,12 +41,12 @@ public class PlayerController : MonoBehaviour
         render = GetComponent<SpriteRenderer>();
         anim=GetComponent<Animation>();
         rig =GetComponent<Rigidbody2D>();
-
+        
         Maxhp = 10;
         hp = Maxhp;
-
-        //方向控制
-        IsFaceRight = !render.flipX;
+        
+       //方向控制
+       IsFaceRight = !render.flipX;
     }
    
     // Update is called once per frame
@@ -98,6 +100,15 @@ public class PlayerController : MonoBehaviour
         {
             rig.velocity = new Vector2(-speed_x_constraint, rig.velocity.y);
         }
+        //子彈發射
+        if (Input.GetKeyDown(KeyCode.X))
+        {
+            BulletController bullet = Instantiate(bulletPrefab, this.transform.position, Quaternion.identity).GetComponent<BulletController>();
+            if (!IsFaceRight)
+            {
+                bullet.BulletIsMoveRight = false;
+            }
+        }
     }
      private void Flip()
     {
@@ -142,7 +153,13 @@ public class PlayerController : MonoBehaviour
         if (coll.gameObject.tag == "Point")
         {
             point += 1;
-        }
+            Debug.Log("+1)");
+
             
+        }
+        if (point ==7&coll.gameObject.tag == "Portal")   //結局
+        {
+            SceneManager.LoadScene("End_1");
+        }
     }
 }
